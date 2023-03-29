@@ -4,9 +4,6 @@ TO UPDATE
 
 Main steps.
 =================================
-**Step One**: Installing Docker Desktop
-
-**Step Two**: Making Nginx Container with TLSv1.2 or TLS1.3
   1.  **Writing Dockerfile**
 
     - *Getting Alpine* before latest version : **APK** is the package manager for Alpine Linux (while APT is the one from Debian. Be careful commands are differents from one another)
