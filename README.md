@@ -26,7 +26,7 @@ Main steps.
   
 *Main difficulties*:
   1. Undestanding Docker environement 
-  2. Many error msges du to configuration file :
+  2. Many error msges due to configuration file :
   3. Understanding difference between Dockerfile and Docker-Compose 
   4. Understanding while writing a Docker-compose, the difference between Expose and Ports
   5. What is TCP ? TLS ? SSL ? 
@@ -119,13 +119,6 @@ Main Docker commands :
 | **docker logs ** | print out the processes running |
 
 
-templates
-| **docker attach [Options] CONTAINER_ID** | Give the opportunity to attach a container to a terminal and follow its steps|
-| **docker attach [Options] CONTAINER_ID** | Give the opportunity to attach a container to a terminal and follow its steps|
-| **docker attach [Options] CONTAINER_ID** | Give the opportunity to attach a container to a terminal and follow its steps|
-| **docker attach [Options] CONTAINER_ID** | Give the opportunity to attach a container to a terminal and follow its steps|
-
-
 Sideways: TO UPDATE
 -----------
 Some cool new command line learnt : 
@@ -133,8 +126,6 @@ Some cool new command line learnt :
   
   - apk list : to launch inside the container terminal to list all the packages installed
   
-
-
 
 Intersting concepts to develop : TO UPDATE
 ----------
