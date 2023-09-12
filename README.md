@@ -1,6 +1,6 @@
 # Introdution to "Inception" project 
 
-Docker is a wonderful platform that solves a major problem encountered by developpers: missing or incorrect application dependencies from one OS to another. This project allows us to understand how Docker works and what are the mainfunctionalities it offers to solve this major problem. 
+Docker is a wonderful platform that solves a major problem encountered by developpers: missing or incorrect application dependencies from one OS to another. This project allows us to understand how Docker works and what are the main functionalities it offers to solve this major problem. 
 
 Requirements
 =================================
