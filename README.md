@@ -1,30 +1,33 @@
 # Introdution to "Inception" project 
-TO UPDATE
 
+Docker is a wonderful platform that solves a major problem encountered by developpers: missing or incorrect application dependencies from one OS to another. This project allows us to understand how Docker works and what are the mainfunctionalities it offers to solve this major problem. 
 
-Main steps.
+Requirements
 =================================
-  1.  **Writing Dockerfile**
+1. set up a small infrastructure composed of different services under specific rules. **The whole project has to be done in a virtual machine**. You
+have to use docker compose.
 
-    - *Getting Alpine* before latest version : **APK** is the package manager for Alpine Linux (while APT is the one from Debian. Be careful commands are differents from one another)
-    
-    - *Getting SSL package* : briefly, SSL stand for **Secure Socket Layer** is software kinda toolkit for general-purpose cryptography and secure communication. Makes communication between server and client very sure and secure.
-    
-    - *Configuration nginx file* (making the server communication with outside on defined ports).
-    
-   2. **Writing docker-compose.yml or docker-compose.yaml file**
-   
-   *What is the docker-compose.yml or docker-compose.yaml file?*
-   
-    The Compose file is a YAML file defining :
-    - services : contains configuration that is applied to each container started for taht service (equivalent to options passed to the docker run cmd)
-    - networks
-    - volumes : 
-      . Specify a list of options as key-value pairs to pass to the driver for this network. Those options are driver-dependent
-  
-   3. Launching docker compose to test that everything is alright
-  
-*Main difficulties*:
+2. Each Docker image must have the same name as its corresponding service.
+
+3. Each service has to run in a dedicated container. For performance matters, the containers must be built either from the penultimate stable
+version of Alpine or Debian. The choice is yours.
+
+4. **Write your own Dockerfiles, one per service**. The Dockerfiles must be called in your docker-compose.yml by your Makefile.
+It means you have to build yourself the Docker images of your project. It is then forbidden to pull ready-made Docker images, as well as using services such as DockerHub (Alpine/Debian being excluded from this rule).
+You then have to set up:
+• A Docker container that contains NGINX with TLSv1.2 or TLSv1.3 only.
+• A Docker container that contains WordPress + php-fpm (it must be installed and
+configured) only without nginx.
+• A Docker container that contains MariaDB only without nginx.
+• A volume that contains your WordPress database.
+• A second volume that contains your WordPress website files.
+• A docker-network that establishes the connection between your containers.
+Your containers have to restart in case of a crash.
+
+
+Main difficulties.
+=================================
+
   1. Undestanding Docker environement 
   2. Many error msges due to configuration file :
   3. Understanding difference between Dockerfile and Docker-Compose 
@@ -36,43 +39,62 @@ Main steps.
   9. Why launching Nginx in the foreground and not background ? What's the purpose ?
   10.  PID 1 zombie reaping problem.
 
-  ###### Errors encountered and their solution :
-    a. getpwnam("www") failed in /etc/nginx/nginx.conf
-      - Solution : removing the first line concerning "user www-data" in configuration file bc docker, at creation, know where to find it or use root ??
-    b. 
+  **Errors encountered for mariaDB**
 
-**Step Three**: Installing Maria Database
-
-1. **Writing a Dockerfile**
-
-  - Installing Alpine with APK
-  - Intalling VIM
-  - Installing mariadb client/server/common
-  - Getting the configuration file
-  *Good to know*
-    --> mysql_install_db : This program initializes the MySQL data directory, creates the mysql database and initializes its grant tables with default    privileges, and sets up the InnoDB system tablespace. It is usually executed only once, when first installing MySQL on a system
-
-**Main commands for mariaDB
-
-  *mysqlshow* : Shows the structure of a MariaDB database (databases, tables, columns and indexes).
-  or
-  *mariadb-show*
-  
-  *mysql_install_db*  initializes the MariaDB data directory and creates the system tables in the mysql database, if they do not exist. MariaDB uses these tables to manage privileges, roles, and plugins. It also uses them to provide the data for the help command in the mysql client.
-
-
-**Errors encountered for mariaDB**
-
-1. "“Error response from daemon: Container $$$$ is restarting, wait until the container is running.”
-  
+  1. "“Error response from daemon: Container $$$$ is restarting, wait until the container is running.”
+    
   *Solution* : /* docker logs --details CONTAINER_ID */ made me understand, that the pb came from INNODB: unknown/unstarted service. INNODB is a storage engine for Mysql and Mariadb. This made me, obviously, think about "Volumes". Effectively, i checked my file supposed to host my data from mariadb and it was suppressed so i recreated. Everything worked fine then.
+  
+  2. Feels like the script written to do configs in mariaDB isn't read so passwords, users and dbs are not created.
+     
+     **Solution** : 
+        - Launched the mariaDB terminal
+        - checked if the script was created in the directory i configured and launched it 
+        Error encountered : " mysqld: Got error 'Could not get an exclusive lock; file is probably in use by another process' when trying to use aria control file '/var/lib/mysql/aria_log_control' "
 
-2. Feels like the script written to do configs in mariaDB isn't read so passwords, users and dbs are not created.
-   
-   *Solution* : 
-      - Launched the mariaDB terminal
-      - checked if the script was created in the directory i configured and launched it 
-      Error encountered : " mysqld: Got error 'Could not get an exclusive lock; file is probably in use by another process' when trying to use aria control file '/var/lib/mysql/aria_log_control' "
+# SUMMARY
+
+### 1. [DEFINITIONS]
+### 2. [DOCKER COMMANDS]
+
+# Definitions
+## What is a docker ?
+Docker is an open platform for developing, shipping, and running applications. Docker enables you to separate your applications from your infrastructure so you can deliver software quickly. With Docker, you can manage your infrastructure in the same ways you manage your applications. By taking advantage of Docker’s methodologies for shipping, testing, and deploying code quickly, you can significantly reduce the delay between writing code and running it in production.
+Docker provides the ability to package and run an application in a loosely isolated environment called a container.
+
+## What is a docker-compose ?
+[What is docker in general](https://www.educative.io/blog/docker-compose-tutorial)
+[What is docker network](https://www.aquasec.com/cloud-native-academy/docker-container/docker-networking/)
+Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration.
+
+## What is a docker-file ?
+Docker can build images automatically by reading the instructions from a Dockerfile. A Dockerfile is a text document that contains all the commands a user could call on the command line to assemble an image. Using docker build users can create an automated build that executes several command-line instructions in succession.
+
+
+# Docker commands
+| Command | Purpose |
+|:--------------|:----------------|
+| **docker build** | For building images |
+| **docker run**  | For running a container from an image |
+| **docker pull** | For pulling a Docker image from the Docker repository|
+| **docker push** | For updating an image in Docker repo |
+| **docker ps** | Listing all active containers (PS : referring to Processes) |
+| **docker container ls -a** | Listing all active and non active containers |
+| **docker rmi -f IMAGE_ID** | Forcing the delete of a certain image |
+| **docker rm -f CONTAINER_ID** | Forcing the delete of a certain container |
+| **docker images** | Listing all images |
+| **docker compose up** | Launching docker-compose.yml |
+| **docker stop CONTAINER_ID** | Stoping a container  |
+| **docker start CONTAINER_ID** | Restarting a container  |
+| **docker image -prune** | Removing all unused images  |
+| **docker exec -it nginx sh** | Launching a shell from a container|
+| **docker volume ls** | lists all the volumes created by the container|
+| **docker attach [Options] CONTAINER_ID** | Give the opportunity to attach a container to a terminal and follow its steps|
+| **docker network ls** | All networks created and existing in Docker |
+| **docker exec CONTAINER_NAME ps -eaf** | print out the processes running |
+| **docker system prune** | Remove all unused containers, networks, images (both dangling and unreferenced), and optionally, volumes.  |
+| **docker logs ** | print out the processes running |
+
 
 Links that helped
 -----------
@@ -92,34 +114,7 @@ Links that helped
 | docker-compose.yaml specifications | https://github.com/compose-spec/compose-spec/blob/master/spec.md |
 | Tuto pour WP from scratch | [https://github.com/compose-spec/compose-spec/blob/master/spec.md](https://codingwithmanny.medium.com/custom-wordpress-docker-setup-8851e98e6b8) |
 
-
-Main Docker commands : 
-----------------------
-
-| Command | Purpose |
-|:--------------|:----------------|
-| **docker build** | For building images |
-| **docker run**  | For running a container from an image |
-| **docker pull** | For pulling a Docker image from the Docker repository|
-| **docker push** | For updating an image in Docker repo |
-| **docker ps** | Listing all active containers (PS : referring to Processes) |
-| **docker container ls -a** | Listing all active and non active containers |
-| **docker rmi -f IMAGE_ID** | Forcing the delete of a certain image |
-| **docker rm -f CONTAINER_ID** | Forcing the delete of a certain container |
-| **docker images** | Listing all images |
-| **docker compose up** | Launching docker-compose.yml |
-| **docker stop CONTAINER_ID** | Stoping a container  |
-| **docker start CONTAINER_ID** | Restarting a container  |
-| **docker image -prune** | Removing all unused images  |
-| **docker exec -it nginx sh** | Launching a shell from a container|
-| **docker volume ls** | lists all the volumes created by the container|
-| **docker attach [Options] CONTAINER_ID** | Give the opportunity to attach a container to a terminal and follow its steps|
-| **docker network ls** | |
-| **docker exec CONTAINER_NAME ps -eaf** | print out the processes running |
-| **docker logs ** | print out the processes running |
-
-
-Sideways: TO UPDATE
+Sideways:
 -----------
 Some cool new command line learnt : 
   - ps -ef | grep -i nginx => *to know which user is used by the server nginx*
@@ -127,7 +122,7 @@ Some cool new command line learnt :
   - apk list : to launch inside the container terminal to list all the packages installed
   
 
-Intersting concepts to develop : TO UPDATE
+Intersting concepts to develop :
 ----------
 1a. Load Balancing
 
