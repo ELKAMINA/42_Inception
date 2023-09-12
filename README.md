@@ -54,8 +54,8 @@ Main difficulties.
 
 # SUMMARY
 
-### 1. [DEFINITIONS]
-### 2. [DOCKER COMMANDS]
+### 1. [DEFINITIONS](https://github.com/elkamina/42_Inception/blob/main/README.md#definitions)
+### 2. [DOCKER COMMANDS](https://github.com/elkamina/42_Inception/blob/main/README.md#docker commands)
 
 # Definitions
 ## What is a docker ?
